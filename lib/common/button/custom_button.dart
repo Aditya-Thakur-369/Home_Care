@@ -79,7 +79,9 @@ class _CustomButtonState extends State<CustomButton> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text(widget.name, style: AppTextStyle.xxsblack),
+                      Text(
+                        widget.name,
+                      ),
                       widget.icon == null
                           ? SizedBox(
                               width: 10.w,
