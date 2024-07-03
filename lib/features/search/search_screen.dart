@@ -9,6 +9,7 @@ import 'package:home_care/features/home/widget/custom_cards.dart';
 import 'package:home_care/features/search/widget/custom_search_card.dart';
 import 'package:iconly/iconly.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -19,6 +20,14 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
+  YoutubePlayerController youtubeController = YoutubePlayerController(
+    initialVideoId: 'v=a8iYp3zgUpg',
+    flags: const YoutubePlayerFlags(
+      autoPlay: true,
+      mute: true,
+      enableCaption: false,
+    ),
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,14 +52,26 @@ class _SearchScreenState extends State<SearchScreen> {
                   child: Material(
                     child: TextFormField(
                       decoration: InputDecoration(
-                          fillColor: Colors.red,
-                          hintText: "Search Services",
-                          prefixIcon: const Icon(IconlyLight.search),
-                          contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 22, vertical: 16),
-                          border: OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(60.h)))),
+                        fillColor: AppColors.primaryGreen,
+                        hintText: "Search Services",
+                        prefixIcon: const Icon(IconlyLight.search),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 22, vertical: 22),
+                        border: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(60.h)),
+                            borderSide: BorderSide(
+                                color: AppColors.primaryGreen,
+                                style: BorderStyle.solid,
+                                width: 2)),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius:
+                                BorderRadius.all(Radius.circular(60.h)),
+                            borderSide: BorderSide(
+                                color: AppColors.primaryGreen,
+                                style: BorderStyle.solid,
+                                width: 2)),
+                      ),
                     ),
                   ),
                 ),
@@ -115,6 +136,15 @@ class _SearchScreenState extends State<SearchScreen> {
               ],
             ),
           ),
+          const SizedBox(
+            height: 20,
+          ),
+          SizedBox(
+              height: 200,
+              width: 300,
+              child: YoutubePlayer(
+                controller: youtubeController,
+              ))
         ],
       ),
     );

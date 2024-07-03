@@ -41,6 +41,7 @@ dependencies:
   go_router: ^14.2.0
   iconsax: ^0.0.8
   iconly: ^1.0.1
+  youtube_player_flutter: ^9.0.1
 
 dev_dependencies:
   flutter_test:
