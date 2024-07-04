@@ -1,15 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:home_care/common/colors/app_colors.dart';
-import 'package:home_care/common/textfield/input_text_field.dart';
-import 'package:home_care/common/textstyle/app_textStyles.dart';
-import 'package:home_care/features/home/widget/custom_cards.dart';
+import 'package:home_care/common/constants/dummy_data.dart';
 import 'package:home_care/features/search/widget/custom_search_card.dart';
 import 'package:iconly/iconly.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -20,18 +17,42 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
-  YoutubePlayerController youtubeController = YoutubePlayerController(
-    initialVideoId: 'v=a8iYp3zgUpg',
-    flags: const YoutubePlayerFlags(
-      autoPlay: true,
-      mute: true,
-      enableCaption: false,
-    ),
-  );
+  List<Map<String, dynamic>> filterList = [];
+
+  @override
+  void initState() {
+    filterList = DummyData.data_list;
+    super.initState();
+    _controller.addListener(() {
+      filterItem(_controller.text);
+    });
+  }
+
+  void filterItem(String query) {
+    setState(() {
+      if (query.isEmpty) {
+        filterList = DummyData.data_list;
+      } else {
+        filterList = DummyData.data_list
+            .where((element) => element['name']
+                .toString()
+                .toLowerCase()
+                .contains(query.toLowerCase()))
+            .toList();
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: AppColors.lightGreen,
+      backgroundColor: const Color(0xFFFFFFF0),
       body: Column(
         children: [
           Column(
@@ -50,7 +71,9 @@ class _SearchScreenState extends State<SearchScreen> {
                 child: Hero(
                   tag: "hero",
                   child: Material(
+                    borderRadius: BorderRadius.circular(40),
                     child: TextFormField(
+                      controller: _controller,
                       decoration: InputDecoration(
                         fillColor: AppColors.primaryGreen,
                         hintText: "Search Services",
@@ -78,73 +101,34 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ],
           ),
-          SizedBox(
-            height: 20.h,
-          ),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: Column(
-              children: [
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CustomSearchCard(
-                      icon: Iconsax.building_4,
-                      name: 'Aditions & Remondels',
-                    ),
-                    CustomSearchCard(
-                      icon: Icons.cleaning_services_rounded,
-                      name: 'Cleaning',
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CustomSearchCard(
-                      icon: Icons.thermostat_rounded,
-                      name: 'Heating',
-                    ),
-                    CustomSearchCard(
-                      icon: Icons.water_drop_rounded,
-                      name: 'Plumbing',
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10.h,
-                ),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    CustomSearchCard(
-                      icon: Icons.format_paint_outlined,
-                      name: 'Painting',
-                    ),
-                    CustomSearchCard(
-                      icon: Icons.electric_bolt_sharp,
-                      name: 'Electrical',
-                    ),
-                  ],
-                )
-              ],
+            child: GridView.builder(
+              shrinkWrap: true,
+              padding: EdgeInsets.zero,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: filterList.length,
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, crossAxisSpacing: 10, mainAxisSpacing: 10),
+              itemBuilder: (context, index) {
+                var data = filterList[index];
+                bool flag = index % 2 == 0;
+                return CustomSearchCard(
+                  icon: data['icon'],
+                  name: data['name'],
+                  isLeft: !flag,
+                  onPressed: () {
+                    setState(() {
+                      _controller.text = data['name'];
+                    });
+                  },
+                );
+              },
             ),
           ),
           const SizedBox(
             height: 20,
           ),
-          SizedBox(
-              height: 200,
-              width: 300,
-              child: YoutubePlayer(
-                controller: youtubeController,
-              ))
         ],
       ),
     );
