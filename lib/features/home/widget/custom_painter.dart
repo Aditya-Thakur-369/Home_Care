@@ -1,17 +1,22 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:home_care/common/colors/app_colors.dart';
 
 class MasterPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    Paint p1 = Paint();
-    p1.color = AppColors.primaryGreen;
-    p1.strokeWidth = 2;
-    p1.maskFilter = const MaskFilter.blur(BlurStyle.normal, 92);
+    Paint paint = Paint();
+    paint.strokeWidth = 2;
+    // paint.color = const Color.fromARGB(255, 134, 172, 230);
+    paint.color = Colors.lightGreen;
+    paint.maskFilter = const MaskFilter.blur(BlurStyle.normal, 92);
 
-    canvas.drawCircle(const Offset(150, 150), 60, p1);
+    canvas.drawCircle(Offset(size.width, 320), 150, paint);
+
+    Paint paint1 = Paint();
+    paint1.strokeWidth = 2;
+    paint1.color = Colors.redAccent.withOpacity(0.7);
+    paint1.maskFilter = const MaskFilter.blur(BlurStyle.normal, 92);
+
+    canvas.drawCircle(Offset(0, size.height / 2 + 100), 150, paint1);
   }
 
   @override
